@@ -4,27 +4,6 @@ namespace TechnicalInterview.OmniaRetail.Api.Endpoints.Internal
 {
     internal static class EndpointExtensions
     {
-        /// <summary>
-        /// Executes te AddEndpoints method of all classes that are not abstract or 
-        /// interfaces in the assembly of the marker type.
-        /// </summary>
-        /// <typeparam name="TMarker">Any Type that belongs to the desired assembly</typeparam>
-        /// <param name="services">The services collection of the Web Application Builder</param>
-        /// <param name="configuration">The configuration of the Web Application Builder</param>
-        public static void AddEndpoints<TMarker>(this IServiceCollection services, IConfiguration configuration)
-        {
-            AddEndpoints(services, typeof(TMarker), configuration);
-        }
-        public static void AddEndpoints(this IServiceCollection services, Type typeMarker, IConfiguration configuration)
-        {
-            IEnumerable<TypeInfo> endpointTypes = GetEndpointTypesFromAssemblyContaining(typeMarker);
-
-            foreach (System.Reflection.TypeInfo? endpointType in endpointTypes)
-            {
-                endpointType.GetMethod(nameof(IEndpoints.AddServices))!
-                    .Invoke(null, new object[] { services, configuration });
-            }
-        }
 
         /// <summary>
         /// Defines the endpoints to the Web Application defined by the assembly
