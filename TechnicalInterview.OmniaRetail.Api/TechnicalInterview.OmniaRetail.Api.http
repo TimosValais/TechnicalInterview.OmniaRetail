@@ -1,0 +1,6 @@
+@TechnicalInterview.OmniaRetail.Api_HostAddress = http://localhost:5091
+
+GET {{TechnicalInterview.OmniaRetail.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
