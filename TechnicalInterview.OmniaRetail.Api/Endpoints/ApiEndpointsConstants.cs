@@ -21,7 +21,7 @@
         {
             private const string Base = $"{ApiBase}/products/groups";
             public const string GetAll = Base;
-            public const string GetCompetitors = $"{Base}/competitors";
+            public const string GetCompetitors = $"{Base}/{{groupId}}/competitors";
 
         }
     }
