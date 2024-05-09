@@ -1,13 +1,13 @@
 ﻿using TechincalInterview.OmniaRetail.Contracts.Requests;
-using TechnicalInterview.OmniaRetail.Application.Domain;
+using TechnicalInterview.OmniaRetail.Application.Models;
 
 namespace TechnicalInterview.OmniaRetail.Api.Mappings
 {
     public static class ContractMapings
     {
-        public static ProductRetailerPrice MapToProductRetailerPrice(this UpdateProductPriceRequest request, Guid retailerId)
+        public static RetailerProductPrice MapToProductRetailerPrice(this UpdateProductPriceRequest request, Guid retailerId)
         {
-            return new ProductRetailerPrice
+            return new RetailerProductPrice
             {
                 ProductId = request.ProductId,
                 RetailerId = retailerId,

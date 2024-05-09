@@ -1,15 +1,15 @@
 ﻿using TechincalInterview.OmniaRetail.Contracts;
-using TechnicalInterview.OmniaRetail.Application.Domain;
+using TechnicalInterview.OmniaRetail.Application.Models;
 
 namespace TechnicalInterview.OmniaRetail.Application.Services
 {
     public interface IProductService
     {
-        public Task<Product?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
-        public Task<IEnumerable<int>> GetProductPricesAsync(Guid productId, CancellationToken cancellationToken);
+        public Task<Product?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+        public Task<IEnumerable<int>> GetProductPricesAsync(Guid productId, CancellationToken cancellationToken = default);
 
-        public Task<int> GetProductHighestTier1PriceAsync(Guid productId, CancellationToken cancellationToken);
-        public Task<int> GetPriceRecommendationByIdAsync(Guid productId, PriceTier priceTier, CancellationToken cancellationToken);
+        public Task<int> GetProductHighestTier1PriceAsync(Guid productId, CancellationToken cancellationToken = default);
+        public Task<int> GetPriceRecommendationByIdAsync(Guid productId, PriceTier priceTier = default, CancellationToken cancellationToken = default);
 
     }
 }

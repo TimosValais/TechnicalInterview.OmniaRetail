@@ -1,7 +1,15 @@
 using TechnicalInterview.OmniaRetail.Api;
 using TechnicalInterview.OmniaRetail.Api.Endpoints.Internal;
-
+using TechnicalInterview.OmniaRetail.Application;
+using TechnicalInterview.OmniaRetail.Application.Persistence;
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+ConfigurationManager config = builder.Configuration;
+
+string? test = config["Database:ConnectionString"];
+Console.WriteLine(test);
+
+builder.Services.AddApplication().AddInfrastructure(config["Database:ConnectionString"]!);
+
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -21,5 +29,8 @@ app.UseSwaggerUI();
 app.UseHttpsRedirection();
 
 app.UseEndpoints<IApiMarker>();
+
+IDbInitializer dbInitializer = app.Services.GetRequiredService<IDbInitializer>();
+await dbInitializer.InitializeAsync();
 app.Run();
 

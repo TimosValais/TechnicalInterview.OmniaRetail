@@ -1,8 +1,10 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using TechnicalInterview.OmniaRetail.Application.Persistence;
 
 namespace TechnicalInterview.OmniaRetail.Application
 {
-    internal static class DependencyInjection
+    public static class DependencyInjection
     {
         /// <summary>
         /// Adds the required implementations of the application.
@@ -23,9 +25,13 @@ namespace TechnicalInterview.OmniaRetail.Application
         /// </summary>
         /// <param name="services">The Application Builder Services collection</param>
         /// <returns></returns>
-        public static IServiceCollection AddInfrastructure(this IServiceCollection services)
+        public static IServiceCollection AddInfrastructure(this IServiceCollection services, string connectionString)
         {
-
+            services.AddDbContext<AppDbContext>(options =>
+            {
+                options.UseSqlite(connectionString);
+            });
+            services.AddSingleton<IDbInitializer, DbInitializer>();
             return services;
         }
     }

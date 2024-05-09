@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TechincalInterview.OmniaRetail.Contracts;
 using TechnicalInterview.OmniaRetail.Api.Endpoints.Internal;
-using TechnicalInterview.OmniaRetail.Application.Domain;
+using TechnicalInterview.OmniaRetail.Application.Models;
 using TechnicalInterview.OmniaRetail.Application.Services;
 
 namespace TechnicalInterview.OmniaRetail.Api.Endpoints

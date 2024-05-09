@@ -3,7 +3,7 @@ using TechincalInterview.OmniaRetail.Contracts.Requests;
 using TechnicalInterview.OmniaRetail.Api.Auth;
 using TechnicalInterview.OmniaRetail.Api.Endpoints.Internal;
 using TechnicalInterview.OmniaRetail.Api.Mappings;
-using TechnicalInterview.OmniaRetail.Application.Domain;
+using TechnicalInterview.OmniaRetail.Application.Models;
 using TechnicalInterview.OmniaRetail.Application.Services;
 
 namespace TechnicalInterview.OmniaRetail.Api.Endpoints
@@ -28,7 +28,7 @@ namespace TechnicalInterview.OmniaRetail.Api.Endpoints
             {
                 return Results.Unauthorized();
             }
-            List<ProductRetailerPrice> productRetailerPrices = [];
+            List<RetailerProductPrice> productRetailerPrices = [];
             foreach (UpdateProductPriceRequest productPrice in productPrices)
             {
                 productRetailerPrices.Add(productPrice.MapToProductRetailerPrice((Guid)retailerId));
