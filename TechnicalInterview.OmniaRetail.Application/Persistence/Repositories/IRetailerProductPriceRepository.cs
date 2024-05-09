@@ -6,8 +6,8 @@ namespace TechnicalInterview.OmniaRetail.Application.Persistence.Repositories
     {
         public Task<bool> UpdateBatchAsync(IEnumerable<RetailerProductPrice> retailerProductPrices, CancellationToken cancellationToken = default);
 
-        public Task<IEnumerable<RetailerProductPrice>> GetAllByProductIdAsync(Guid productId);
+        public Task<IEnumerable<RetailerProductPrice>> GetAllByProductIdAsync(Guid productId, CancellationToken cancellationToken = default);
 
-        public Task<IEnumerable<RetailerProductPrice>> GetAllByProductIdsAsync(IEnumerable<Guid> productIds);
+        public Task<IEnumerable<RetailerProductPrice>> GetAllByProductIdsAsync(IEnumerable<Guid> productIds, CancellationToken cancellationToken = default);
     }
 }

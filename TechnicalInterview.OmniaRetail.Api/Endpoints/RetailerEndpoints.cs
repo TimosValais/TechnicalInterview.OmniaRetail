@@ -16,7 +16,7 @@ namespace TechnicalInterview.OmniaRetail.Api.Endpoints
             app.MapPut(ApiEndpointsConstants.Product.UpdatePrices, UpdateRetailerProductPrices);
         }
 
-        private static async Task<IResult> GetCompetitorsByProductGroupId([FromRoute] Guid productGroupId, IRetailerService retailerService, CancellationToken cancellationToken)
+        private static async Task<IResult> GetCompetitorsByProductGroupId(Guid productGroupId, IRetailerService retailerService, CancellationToken cancellationToken)
         {
             IEnumerable<Retailer> competitors = await retailerService.GetCompetitorsByProductGroupIdAsync(productGroupId, cancellationToken);
             return Results.Ok(competitors);
