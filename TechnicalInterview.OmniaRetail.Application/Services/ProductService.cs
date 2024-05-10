@@ -69,7 +69,7 @@ namespace TechnicalInterview.OmniaRetail.Application.Services
             //Get the prices of the requested price Tier
             (List<int> Prices, PriceTier PriceTier) tierPrices = SeparatePricesIntoTiers(prices).FirstOrDefault(x => x.PriceTier == priceTier);
             //in case there are no prices in the selected tier, we need handling
-            if (tierPrices.Prices.Count == 0)
+            if (tierPrices.Prices is null || tierPrices.Prices.Count == 0)
             {
                 return FindNextBestRecommendation(tierPrices, priceTier, prices);
             }

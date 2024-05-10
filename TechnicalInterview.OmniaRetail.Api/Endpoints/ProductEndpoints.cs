@@ -11,7 +11,6 @@ namespace TechnicalInterview.OmniaRetail.Api.Endpoints
     public class ProductEndpoints : IEndpoints
     {
         private const int cacheExpirationSeconds = 15;
-        private const string GroupName = "Product Endpoints";
         public static void DefineEndPoints(IEndpointRouteBuilder app)
         {
             app.MapGet(ApiEndpointsConstants.Product.GetAll, GetAllProducts)
@@ -56,29 +55,51 @@ namespace TechnicalInterview.OmniaRetail.Api.Endpoints
 
         }
 
-
+        /// <summary>
+        /// Gets All products from the database
+        /// </summary>
         private static async Task<IResult> GetAllProducts(IProductService productService, CancellationToken cancellationToken)
         {
             IEnumerable<Product> products = await productService.ListAsync(cancellationToken);
             return Results.Ok(products.MapToProductResponses());
         }
 
+        /// <summary>
+        /// Gets a product by its Id
+        /// </summary>
+        /// <param name="id">The Id must be a guid</param>
+        /// <returns></returns>
         private static async Task<IResult> GetProductById(Guid id, IProductService productService, CancellationToken cancellationToken)
         {
             Product? product = await productService.GetByIdAsync(id, cancellationToken);
             return product is not null ? Results.Ok(product.MapToProductResponse()) : Results.NotFound($"Product with Id {id} was not found");
         }
+        /// <summary>
+        /// Gets all prices of a product
+        /// </summary>
+        /// <param name="id">The id must be a guid</param>
+        /// <returns></returns>
         private static async Task<IResult> GetProductPricesById(Guid id, IProductService productService, CancellationToken cancellationToken)
         {
             IEnumerable<int> productPrices = await productService.GetProductPricesAsync(id, cancellationToken);
             return Results.Ok(ContractMapings.MapToPriceResponses(productPrices));
         }
-
+        /// <summary>
+        /// Gets the highest Price of a product
+        /// </summary>
+        /// <param name="id">The id must be a guid</param>
+        /// <returns></returns>
         private static async Task<IResult> GetProductHighestPriceById(Guid id, IProductService productService, CancellationToken cancellationToken)
         {
             int highestPrice = await productService.GetProductHighestTier1PriceAsync(id, cancellationToken);
             return highestPrice > 0 ? Results.Ok(ContractMapings.MapToPriceResponse(highestPrice)) : Results.NotFound("Couldn't find highest price for this product");
         }
+        /// <summary>
+        /// Gets the price recomendation for a product. Depending on the Tier chosen, this endpoint will bring back the best price on that priece Tier
+        /// </summary>
+        /// <param name="id">The id must be a guid</param>
+        /// <param name="tier">Tier here can be tier1, tier2, tier3 with tier1 the highest in price and tier3 the lowest</param>
+        /// <returns></returns>
         private static async Task<IResult> GetPriceRecomendationByProductId(Guid id, IProductService productService, [FromQuery] string? tier, CancellationToken cancellationToken)
         {
             if (!Enum.TryParse(tier, out PriceTier priceTier))
@@ -90,6 +111,10 @@ namespace TechnicalInterview.OmniaRetail.Api.Endpoints
 
         }
 
+        /// <summary>
+        /// Gets all the product groups from the database
+        /// </summary>
+        /// <returns></returns>
         private static async Task<IResult> GetAllProductGroups(IProductService productService, CancellationToken cancellationToken)
         {
             IEnumerable<ProductGroup> allGroups = await productService.ListProductGroupsAsync(cancellationToken);

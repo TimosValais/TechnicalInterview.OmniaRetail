@@ -1,4 +1,4 @@
 ﻿namespace TechincalInterview.OmniaRetail.Contracts.Requests
 {
-    public record UpdateProductPriceRequest(Guid ProductId, int Price);
+    public record UpdateProductPriceRequest(Guid ProductId, decimal Price);
 }

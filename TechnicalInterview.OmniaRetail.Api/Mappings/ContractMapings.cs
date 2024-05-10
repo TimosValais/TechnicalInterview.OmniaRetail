@@ -12,7 +12,7 @@ namespace TechnicalInterview.OmniaRetail.Api.Mappings
             {
                 ProductId = request.ProductId,
                 RetailerId = retailerId,
-                Price = request.Price,
+                Price = (int)(request.Price * 100),
             };
         }
 
@@ -101,7 +101,7 @@ namespace TechnicalInterview.OmniaRetail.Api.Mappings
         private static string GetPriceStringFromPrice(int price)
         {
             decimal priceDecimal = ((decimal)price) / 100;
-            return priceDecimal.ToString("#.00");
+            return priceDecimal.ToString("0.00");
         }
     }
 }

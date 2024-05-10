@@ -2,6 +2,7 @@ using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Reflection;
 using System.Text;
 using TechincalInterview.OmniaRetail.Contracts.Adapters;
 using TechnicalInterview.OmniaRetail.Api;
@@ -9,6 +10,7 @@ using TechnicalInterview.OmniaRetail.Api.Auth;
 using TechnicalInterview.OmniaRetail.Api.Endpoints.Internal;
 using TechnicalInterview.OmniaRetail.Api.Logging;
 using TechnicalInterview.OmniaRetail.Api.Mappings;
+using TechnicalInterview.OmniaRetail.Api.Swagger;
 using TechnicalInterview.OmniaRetail.Application;
 using TechnicalInterview.OmniaRetail.Application.Persistence;
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
@@ -41,19 +43,25 @@ builder.Services.AddSwaggerGen(opts =>
         Name = "Authorization",
         Type = SecuritySchemeType.ApiKey
     });
-    opts.AddSecurityRequirement(new OpenApiSecurityRequirement {
+    opts.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
-        new OpenApiSecurityScheme
         {
-            Reference = new OpenApiReference
+            new OpenApiSecurityScheme
             {
-              Type = ReferenceType.SecurityScheme,
-              Id = "Bearer"
-            }
-        },
-        new string[] { }
-    }
-  });
+                Reference = new OpenApiReference
+                {
+                  Type = ReferenceType.SecurityScheme,
+                  Id = "Bearer"
+                }
+            },
+            new string[] { }
+        }
+    });
+    opts.SchemaFilter<ExampleSchemaFilter>();
+
+    string xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    opts.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+
 });
 
 //add authentication/authorization
@@ -103,7 +111,7 @@ app.Use(async (context, next) =>
     catch (Exception ex)
     {
         context.Response.StatusCode = 500;
-        await context.Response.WriteAsync("An unexpected error has occured. We 're sorry for the inconvenience");
+        await context.Response.WriteAsJsonAsync(new { ErrorMessage = "An unexpected error has occured. We 're sorry for the inconvenience" });
     }
 });
 

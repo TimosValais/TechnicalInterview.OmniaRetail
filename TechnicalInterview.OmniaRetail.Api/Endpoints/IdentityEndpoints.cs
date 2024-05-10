@@ -15,7 +15,7 @@ namespace TechnicalInterview.OmniaRetail.Api.Endpoints
         private static async Task<IResult> GenerateToken([FromBody] TokenGenerationRequest tokenRequest, IIdentityService identityService)
         {
             string jwt = await identityService.GenerateToken(tokenRequest);
-            return !String.IsNullOrEmpty(jwt) ? Results.Ok(jwt) : Results.BadRequest();
+            return !String.IsNullOrEmpty(jwt) ? Results.Ok(new { JWT = jwt }) : Results.BadRequest();
         }
     }
 }

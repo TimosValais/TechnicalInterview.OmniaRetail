@@ -37,20 +37,24 @@ namespace TechnicalInterview.OmniaRetail.Api.Auth
             {
                 claims.Add(new("retailerId", tokenRequest.RetailerId.ToString()));
             }
-            foreach (KeyValuePair<string, object> claimPair in tokenRequest.CustomClaims)
+            if (tokenRequest.CustomClaims is not null)
             {
-                JsonElement jsonElement = (JsonElement)claimPair.Value;
-                string valueType = jsonElement.ValueKind switch
+                foreach (KeyValuePair<string, object> claimPair in tokenRequest.CustomClaims)
                 {
-                    JsonValueKind.True => ClaimValueTypes.Boolean,
-                    JsonValueKind.False => ClaimValueTypes.Boolean,
-                    JsonValueKind.Number => ClaimValueTypes.Double,
-                    _ => ClaimValueTypes.String
-                };
+                    JsonElement jsonElement = (JsonElement)claimPair.Value;
+                    string valueType = jsonElement.ValueKind switch
+                    {
+                        JsonValueKind.True => ClaimValueTypes.Boolean,
+                        JsonValueKind.False => ClaimValueTypes.Boolean,
+                        JsonValueKind.Number => ClaimValueTypes.Double,
+                        _ => ClaimValueTypes.String
+                    };
 
-                Claim claim = new(claimPair.Key, claimPair.Value.ToString()!, valueType);
-                claims.Add(claim);
+                    Claim claim = new(claimPair.Key, claimPair.Value.ToString()!, valueType);
+                    claims.Add(claim);
+                }
             }
+
 
             SecurityTokenDescriptor tokenDescriptor = new()
             {

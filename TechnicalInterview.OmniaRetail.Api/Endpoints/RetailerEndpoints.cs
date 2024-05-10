@@ -17,6 +17,11 @@ namespace TechnicalInterview.OmniaRetail.Api.Endpoints
             app.MapGet(ApiEndpointsConstants.ProductGroup.GetCompetitors, GetCompetitorsByProductGroupId);
             app.MapPut(ApiEndpointsConstants.Product.UpdatePrices, UpdateRetailerProductPrices);
         }
+        /// <summary>
+        /// Check which competitors also sell products of the same group
+        /// </summary>
+        /// <param name="productGroupId"></param>
+        /// <returns>The competitors that sell products of that product group</returns>
         [Authorize(Policy = AuthConstants.RetailerAdminPolicyName)]
         private static async Task<IResult> GetCompetitorsByProductGroupId(Guid productGroupId, IRetailerService retailerService, HttpContext context, CancellationToken cancellationToken)
         {
@@ -28,6 +33,11 @@ namespace TechnicalInterview.OmniaRetail.Api.Endpoints
             IEnumerable<Retailer> competitors = await retailerService.GetCompetitorsByProductGroupIdAsync(productGroupId, (Guid)retailerId, cancellationToken);
             return Results.Ok(competitors.MapToCompetitorResponses());
         }
+        /// <summary>
+        /// Update your product prices.
+        /// </summary>
+        /// <param name="productPrices">Prices are in float form, no more than 2 presicion (digits after the decimal point)</param>
+        /// <returns></returns>
         [Authorize(Policy = AuthConstants.RetailerAdminPolicyName)]
         private static async Task<IResult> UpdateRetailerProductPrices([FromBody] ICollection<UpdateProductPriceRequest> productPrices,
                                                                         IRetailerService retailerService,
