@@ -30,7 +30,7 @@ namespace TechnicalInterview.OmniaRetail.Api.Endpoints
                 .Expire(TimeSpan.FromSeconds(cacheExpirationSeconds)))
                 .RequireAuthorization()
                 .WithName("Get Prices By Product Id")
-                .Produces<IEnumerable<ProductPriceResponse>>(200);
+                .Produces<IEnumerable<PriceResponse>>(200);
 
             app.MapGet(ApiEndpointsConstants.Product.GetHighestPrice, GetProductHighestPriceById)
                 .CacheOutput(x => x.SetVaryByRouteValue("id")
@@ -38,7 +38,7 @@ namespace TechnicalInterview.OmniaRetail.Api.Endpoints
                 .Expire(TimeSpan.FromSeconds(cacheExpirationSeconds)))
                 .RequireAuthorization()
                 .WithName("Get Product Highest Price")
-                .Produces<ProductPriceResponse>(200)
+                .Produces<PriceResponse>(200)
                 .Produces(404);
 
             app.MapGet(ApiEndpointsConstants.Product.GetPriceRecommendations, GetPriceRecomendationByProductId)
@@ -47,7 +47,7 @@ namespace TechnicalInterview.OmniaRetail.Api.Endpoints
                 .Expire(TimeSpan.FromSeconds(cacheExpirationSeconds)))
                 .RequireAuthorization()
                 .WithName("Get Price Recomendation For A Product")
-                .Produces<ProductPriceResponse>(200)
+                .Produces<PriceResponse>(200)
                 .Produces(404);
 
             app.MapGet(ApiEndpointsConstants.ProductGroup.GetAll, GetAllProductGroups)
@@ -102,7 +102,7 @@ namespace TechnicalInterview.OmniaRetail.Api.Endpoints
         /// <returns></returns>
         private static async Task<IResult> GetPriceRecomendationByProductId(Guid id, IProductService productService, [FromQuery] string? tier, CancellationToken cancellationToken)
         {
-            if (!Enum.TryParse(tier, out PriceTier priceTier))
+            if (!Enum.TryParse(value: tier, ignoreCase: true, out PriceTier priceTier))
             {
                 priceTier = PriceTier.Tier3;
             }

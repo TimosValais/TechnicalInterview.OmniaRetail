@@ -11,11 +11,16 @@ namespace TechnicalInterview.OmniaRetail.Api.Endpoints
         {
             app.MapPost("identity/token", GenerateToken);
         }
-
+        /// <summary>
+        /// Get's a JWT token to add to authentication header. It returns with the Bearer schema prepended.
+        /// </summary>
+        /// <param name="tokenRequest"></param>
+        /// <param name="identityService"></param>
+        /// <returns></returns>
         private static async Task<IResult> GenerateToken([FromBody] TokenGenerationRequest tokenRequest, IIdentityService identityService)
         {
             string jwt = await identityService.GenerateToken(tokenRequest);
-            return !String.IsNullOrEmpty(jwt) ? Results.Ok(new { JWT = jwt }) : Results.BadRequest();
+            return !String.IsNullOrEmpty(jwt) ? Results.Ok(new { JWT = $"Bearer {jwt}" }) : Results.BadRequest();
         }
     }
 }
