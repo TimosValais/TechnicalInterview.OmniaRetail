@@ -9,14 +9,33 @@ namespace TechnicalInterview.OmniaRetail.Api.Endpoints
 {
     public class ProductEndpoints : IEndpoints
     {
+        private const int cacheExpirationSeconds = 15;
         public static void DefineEndPoints(IEndpointRouteBuilder app)
         {
-            app.MapGet(ApiEndpointsConstants.Product.GetAll, GetAllProducts);
-            app.MapGet(ApiEndpointsConstants.Product.Get, GetProductById);
-            app.MapGet(ApiEndpointsConstants.Product.GetPrices, GetProductPricesById);
-            app.MapGet(ApiEndpointsConstants.Product.GetHighestPrice, GetProductHighestPriceById);
-            app.MapGet(ApiEndpointsConstants.Product.GetPriceRecommendations, GetPriceRecomendationByProductId);
-            app.MapGet(ApiEndpointsConstants.ProductGroup.GetAll, GetAllProductGroups);
+            app.MapGet(ApiEndpointsConstants.Product.GetAll, GetAllProducts)
+                .CacheOutput(x => x.Expire(TimeSpan.FromSeconds(cacheExpirationSeconds)));
+
+            app.MapGet(ApiEndpointsConstants.Product.Get, GetProductById)
+                .CacheOutput(x => x.SetVaryByRouteValue("id")
+                .Expire(TimeSpan.FromSeconds(cacheExpirationSeconds)));
+
+            app.MapGet(ApiEndpointsConstants.Product.GetPrices, GetProductPricesById)
+                .CacheOutput(x => x.SetVaryByRouteValue("id")
+                .Tag(OutputCacheConstants.CacheTags.Prices)
+                .Expire(TimeSpan.FromSeconds(cacheExpirationSeconds)));
+
+            app.MapGet(ApiEndpointsConstants.Product.GetHighestPrice, GetProductHighestPriceById)
+                .CacheOutput(x => x.SetVaryByRouteValue("id")
+                .Tag(OutputCacheConstants.CacheTags.Prices)
+                .Expire(TimeSpan.FromSeconds(cacheExpirationSeconds)));
+
+            app.MapGet(ApiEndpointsConstants.Product.GetPriceRecommendations, GetPriceRecomendationByProductId)
+                .CacheOutput(x => x.SetVaryByRouteValue("id")
+                .Tag(OutputCacheConstants.CacheTags.Prices)
+                .Expire(TimeSpan.FromSeconds(cacheExpirationSeconds)));
+
+            app.MapGet(ApiEndpointsConstants.ProductGroup.GetAll, GetAllProductGroups)
+                .CacheOutput(x => x.Expire(TimeSpan.FromSeconds(cacheExpirationSeconds)));
 
         }
 

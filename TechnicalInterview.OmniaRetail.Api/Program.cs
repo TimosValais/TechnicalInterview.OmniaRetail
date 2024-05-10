@@ -8,7 +8,7 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 ConfigurationManager config = builder.Configuration;
 
 builder.Services.AddTransient(typeof(ILoggerAdapter<>), typeof(LoggerAdapter<>));
-
+builder.Services.AddOutputCache();
 builder.Services.AddApplication()
                 .AddDatabase(config["Database:ConnectionString"]!)
                 .AddInfrastructure();
@@ -29,8 +29,10 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 
+
 app.UseHttpsRedirection();
 
+app.UseOutputCache();
 app.UseEndpoints<IApiMarker>();
 
 // Ensure database is created
