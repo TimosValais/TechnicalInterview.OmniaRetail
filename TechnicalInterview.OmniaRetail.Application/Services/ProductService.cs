@@ -41,7 +41,7 @@ namespace TechnicalInterview.OmniaRetail.Application.Services
         {
             IEnumerable<RetailerProductPrice> allProductRetailerPrices = await _retailerProductPriceRepository.GetAllByProductIdAsync(productId);
             List<int> allPrices = allProductRetailerPrices.Select(prp => prp.Price).ToList();
-            return allPrices.Max();
+            return allPrices.Any() ? allPrices.Max() : 0;
         }
 
         public async Task<IEnumerable<int>> GetProductPricesAsync(Guid productId, CancellationToken cancellationToken = default)
@@ -99,13 +99,13 @@ namespace TechnicalInterview.OmniaRetail.Application.Services
                     break;
                 //If they are looking for the average tier and nothing is found there (highly unlikely), first check for higher tier and then for lower
                 case PriceTier.Tier2:
-                    if (tier3Prices.Prices.Count != 0)
+                    if (tier1Prices.Prices.Count != 0)
                     {
-                        resultPrice = tier3Prices.Prices.Min() - 1;
+                        resultPrice = tier1Prices.Prices.Min() - 1;
                     }
-                    else if (tier1Prices.Prices.Count != 0)
+                    else if (tier3Prices.Prices.Count != 0)
                     {
-                        resultPrice = tier1Prices.Prices.Max() + 1;
+                        resultPrice = tier3Prices.Prices.Max() + 1;
                     }
                     break;
                 //if they are looking for the best cheapest price, then anything cheaper than the next available will do
@@ -125,6 +125,7 @@ namespace TechnicalInterview.OmniaRetail.Application.Services
             if (resultPrice is null)
             {
                 _logger.LogInformation("No result price was found");
+                //TODO: these messages need to be extracted in an error class
                 throw new InvalidDataException("No prices where found to recommend");
             }
             //this will never be null though
@@ -141,6 +142,11 @@ namespace TechnicalInterview.OmniaRetail.Application.Services
         /// <exception cref="NotImplementedException"></exception>
         private IEnumerable<(List<int> Prices, PriceTier PriceTier)> SeparatePricesIntoTiers(List<int> prices)
         {
+            if (prices.Count == 0)
+            {
+                //Can't recommend if there are no prices)
+                throw new InvalidDataException("No prices where found to recommend");
+            }
             double average = prices.Average();
             double sigma = prices.StandardDeviation();
             List<(List<int> Prices, PriceTier PriceTier)> tieredPrices =

@@ -92,16 +92,20 @@ app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 
+//error Middleware
 app.Use(async (context, next) =>
 {
-    System.Security.Claims.ClaimsPrincipal user = context.User;
-    if (user.Identity!.IsAuthenticated)
+    try
     {
-        List<string> claims = user.Claims.Select(c => $"{c.Type}: {c.Value}").ToList();
-        Console.WriteLine(string.Join("\n", claims));
+        await next();
     }
-    await next();
+    catch (Exception ex)
+    {
+        context.Response.StatusCode = 500;
+        await context.Response.WriteAsync("An unexpected error has occured. We 're sorry for the inconvenience");
+    }
 });
+
 app.UseAuthentication();
 app.UseAuthorization();
 
