@@ -17,8 +17,6 @@ namespace Application.Tests.Unit
         private readonly IProductGroupRepository _productGroupRepository = Substitute.For<IProductGroupRepository>();
         private readonly ILoggerAdapter<ProductService> _logger = Substitute.For<ILoggerAdapter<ProductService>>();
 
-
-        //public Task<IEnumerable<ProductGroup>> ListProductGroupsAsync(CancellationToken cancelationToken = default!);
         public ProductServiceTests()
         {
             _sut = new ProductService(_productRepository, _retailerProductPriceRepository, _productGroupRepository, _logger);
@@ -188,6 +186,53 @@ namespace Application.Tests.Unit
             //assert
             result.Should().Be(expectedPrice);
         }
+
+        [Fact]
+        public async Task ListProductGroupsAsync_ShouldReturnEmptyList_WhenNoProductGroupsExist()
+        {
+            //arrange
+            _productGroupRepository.GetAllAsync().Returns(Enumerable.Empty<ProductGroup>());
+
+
+            //act
+
+            IEnumerable<ProductGroup> result = await _sut.ListProductGroupsAsync();
+
+            //assert
+
+            result.Should().BeEmpty();
+        }
+
+
+        [Fact]
+        public async Task ListProductGroupsAsync_ShouldReturnProducts_WhenSomeProductGroupsExist()
+        {
+            //arrange
+            List<ProductGroup> expectedProductGroups = [
+                new()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "Name 1",
+                },
+                              new()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "Name 2",
+                }
+            ];
+            _productGroupRepository.GetAllAsync().Returns(expectedProductGroups);
+
+
+            //act
+
+            IEnumerable<ProductGroup> result = await _sut.ListProductGroupsAsync();
+
+            //assert
+
+            result.Should().BeEquivalentTo(expectedProductGroups);
+        }
+
+        #region Member Data Methods
         public static IEnumerable<object[]> ListOfProductsData()
         {
             Product product1 = new()
@@ -525,7 +570,7 @@ namespace Application.Tests.Unit
             ];
         }
 
-
+        #endregion
 
 
     }

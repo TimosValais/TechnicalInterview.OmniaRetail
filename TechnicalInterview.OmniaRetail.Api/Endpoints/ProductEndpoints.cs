@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TechincalInterview.OmniaRetail.Contracts;
+using TechincalInterview.OmniaRetail.Contracts.Responses;
 using TechnicalInterview.OmniaRetail.Api.Endpoints.Internal;
 using TechnicalInterview.OmniaRetail.Api.Mappings;
 using TechnicalInterview.OmniaRetail.Application.Models;
@@ -10,31 +11,45 @@ namespace TechnicalInterview.OmniaRetail.Api.Endpoints
     public class ProductEndpoints : IEndpoints
     {
         private const int cacheExpirationSeconds = 15;
+        private const string GroupName = "Product Endpoints";
         public static void DefineEndPoints(IEndpointRouteBuilder app)
         {
             app.MapGet(ApiEndpointsConstants.Product.GetAll, GetAllProducts)
-                .CacheOutput(x => x.Expire(TimeSpan.FromSeconds(cacheExpirationSeconds)));
+                .CacheOutput(x => x.Expire(TimeSpan.FromSeconds(cacheExpirationSeconds)))
+                .WithName("Get All Products")
+                .Produces<IEnumerable<ProductResponse>>(200);
             app.MapGet(ApiEndpointsConstants.Product.Get, GetProductById)
                 .CacheOutput(x => x.SetVaryByRouteValue("id")
-                .Expire(TimeSpan.FromSeconds(cacheExpirationSeconds)));
+                .Expire(TimeSpan.FromSeconds(cacheExpirationSeconds)))
+                .WithName("Get Product By Id")
+                .Produces<ProductResponse>(200)
+                .Produces(404);
 
             app.MapGet(ApiEndpointsConstants.Product.GetPrices, GetProductPricesById)
                 .CacheOutput(x => x.SetVaryByRouteValue("id")
                 .Tag(OutputCacheConstants.CacheTags.Prices)
                 .Expire(TimeSpan.FromSeconds(cacheExpirationSeconds)))
-                .RequireAuthorization();
+                .RequireAuthorization()
+                .WithName("Get Prices By Product Id")
+                .Produces<IEnumerable<ProductPriceResponse>>(200);
 
             app.MapGet(ApiEndpointsConstants.Product.GetHighestPrice, GetProductHighestPriceById)
                 .CacheOutput(x => x.SetVaryByRouteValue("id")
                 .Tag(OutputCacheConstants.CacheTags.Prices)
                 .Expire(TimeSpan.FromSeconds(cacheExpirationSeconds)))
-                .RequireAuthorization();
+                .RequireAuthorization()
+                .WithName("Get Product Highest Price")
+                .Produces<ProductPriceResponse>(200)
+                .Produces(404);
 
             app.MapGet(ApiEndpointsConstants.Product.GetPriceRecommendations, GetPriceRecomendationByProductId)
                 .CacheOutput(x => x.SetVaryByRouteValue("id")
                 .Tag(OutputCacheConstants.CacheTags.Prices)
                 .Expire(TimeSpan.FromSeconds(cacheExpirationSeconds)))
-                .RequireAuthorization();
+                .RequireAuthorization()
+                .WithName("Get Price Recomendation For A Product")
+                .Produces<ProductPriceResponse>(200)
+                .Produces(404);
 
             app.MapGet(ApiEndpointsConstants.ProductGroup.GetAll, GetAllProductGroups)
                 .CacheOutput(x => x.Expire(TimeSpan.FromSeconds(cacheExpirationSeconds)));
@@ -71,7 +86,7 @@ namespace TechnicalInterview.OmniaRetail.Api.Endpoints
                 priceTier = PriceTier.Tier3;
             }
             int priceRecommendation = await productService.GetPriceRecommendationByIdAsync(id, priceTier, cancellationToken);
-            return priceRecommendation > 0 ? Results.Ok(ContractMapings.MapToPriceResponse(priceRecommendation)) : Results.Problem("Couldn't recommend price for this product");
+            return priceRecommendation > 0 ? Results.Ok(ContractMapings.MapToPriceResponse(priceRecommendation)) : Results.NotFound("Couldn't recommend price for this product");
 
         }
 
