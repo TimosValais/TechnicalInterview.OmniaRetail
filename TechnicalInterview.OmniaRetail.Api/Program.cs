@@ -20,6 +20,7 @@ builder.Services.AddOutputCache();
 builder.Services.AddApplication()
                 .AddDatabase(config["Database:ConnectionString"]!)
                 .AddInfrastructure();
+builder.Services.AddValidatorsFromAssemblyContaining<IApiMarker>();
 
 //adding mock Identity only in development
 //for demo purposes
@@ -114,7 +115,6 @@ app.UseOutputCache();
 app.UseMiddleware<ValidationMappingMiddleware>();
 
 app.UseEndpoints<IApiMarker>();
-builder.Services.AddValidatorsFromAssemblyContaining<IApiMarker>();
 
 
 // Ensure database is created
