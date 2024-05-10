@@ -4,7 +4,7 @@ namespace TechnicalInterview.OmniaRetail.Application.Services
 {
     public interface IRetailerService
     {
-        public Task<bool> UpdatePricesAsync(IEnumerable<RetailerProductPrice> productRetailerPrices, CancellationToken cancellationToken);
-        public Task<IEnumerable<Retailer>> GetCompetitorsByProductGroupIdAsync(Guid productGroupId, CancellationToken cancellationToken);
+        public Task<bool> UpdatePricesAsync(IEnumerable<RetailerProductPrice> productRetailerPrices, CancellationToken cancellationToken = default);
+        public Task<IEnumerable<Retailer>> GetCompetitorsByProductGroupIdAsync(Guid productGroupId, Guid retailerId, CancellationToken cancellationToken = default);
     }
 }

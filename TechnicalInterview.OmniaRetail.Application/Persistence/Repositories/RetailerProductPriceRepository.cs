@@ -30,13 +30,13 @@ namespace TechnicalInterview.OmniaRetail.Application.Persistence.Repositories
             {
                 _dbContext.RetailerProductPrices.UpdateRange(retailerProductPrices);
 
-                await _dbContext.SaveChangesAsync();
-                return true;
+                int rowsAffected = await _dbContext.SaveChangesAsync();
+                return rowsAffected > 0;
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
-                return false;
+                throw;
             }
 
 

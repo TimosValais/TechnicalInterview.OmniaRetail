@@ -14,6 +14,12 @@ namespace TechnicalInterview.OmniaRetail.Application.Persistence.Repositories
             _dbContext = dbContext;
             _logger = logger;
         }
+
+        public async Task<IEnumerable<ProductGroup>> GetAllAsync(CancellationToken cancellationToken = default)
+        {
+            return await _dbContext.ProductGroups.ToListAsync(cancellationToken);
+        }
+
         public async Task<ProductGroup?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
             return await _dbContext.ProductGroups.FirstOrDefaultAsync(pg => pg.Id == id, cancellationToken);

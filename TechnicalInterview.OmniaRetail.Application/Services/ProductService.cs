@@ -11,12 +11,17 @@ namespace TechnicalInterview.OmniaRetail.Application.Services
         private readonly ILoggerAdapter<ProductService> _logger;
         private readonly IProductRepository _productRepository;
         private readonly IRetailerProductPriceRepository _retailerProductPriceRepository;
+        private readonly IProductGroupRepository _productGroupRepository;
 
-        public ProductService(IProductRepository productRepository, IRetailerProductPriceRepository retailerProductPriceRepository, ILoggerAdapter<ProductService> logger)
+        public ProductService(IProductRepository productRepository,
+                                IRetailerProductPriceRepository retailerProductPriceRepository,
+                                IProductGroupRepository productGroupRepository,
+                                ILoggerAdapter<ProductService> logger)
         {
             _logger = logger;
             _productRepository = productRepository;
             _retailerProductPriceRepository = retailerProductPriceRepository;
+            _productGroupRepository = productGroupRepository;
         }
         public async Task<Product?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
@@ -51,6 +56,12 @@ namespace TechnicalInterview.OmniaRetail.Application.Services
         public async Task<IEnumerable<Product>> ListAsync(CancellationToken cancellationToken = default)
         {
             return await _productRepository.GetAllAsync();
+        }
+
+
+        public async Task<IEnumerable<ProductGroup>> ListProductGroupsAsync(CancellationToken cancelationToken = default)
+        {
+            return await _productGroupRepository.GetAllAsync(cancelationToken);
         }
 
         private int? GetRecommendationByTier(List<int> prices, PriceTier priceTier)
@@ -113,6 +124,7 @@ namespace TechnicalInterview.OmniaRetail.Application.Services
             }
             if (resultPrice is null)
             {
+                _logger.LogInformation("No result price was found");
                 throw new InvalidDataException("No prices where found to recommend");
             }
             //this will never be null though
@@ -139,5 +151,6 @@ namespace TechnicalInterview.OmniaRetail.Application.Services
             ];
             return tieredPrices;
         }
+
     }
 }

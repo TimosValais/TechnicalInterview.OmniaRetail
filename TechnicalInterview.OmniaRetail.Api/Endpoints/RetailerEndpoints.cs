@@ -16,10 +16,15 @@ namespace TechnicalInterview.OmniaRetail.Api.Endpoints
             app.MapPut(ApiEndpointsConstants.Product.UpdatePrices, UpdateRetailerProductPrices);
         }
 
-        private static async Task<IResult> GetCompetitorsByProductGroupId(Guid productGroupId, IRetailerService retailerService, CancellationToken cancellationToken)
+        private static async Task<IResult> GetCompetitorsByProductGroupId(Guid productGroupId, IRetailerService retailerService, HttpContext context, CancellationToken cancellationToken)
         {
-            IEnumerable<Retailer> competitors = await retailerService.GetCompetitorsByProductGroupIdAsync(productGroupId, cancellationToken);
-            return Results.Ok(competitors);
+            Guid? retailerId = context.GetRetailerId();
+            if (retailerId is null)
+            {
+                return Results.Unauthorized();
+            }
+            IEnumerable<Retailer> competitors = await retailerService.GetCompetitorsByProductGroupIdAsync(productGroupId, (Guid)retailerId, cancellationToken);
+            return Results.Ok(competitors.MapToCompetitorResponses());
         }
         private static async Task<IResult> UpdateRetailerProductPrices([FromBody] ICollection<UpdateProductPriceRequest> productPrices, IRetailerService retailerService, HttpContext context, CancellationToken cancellationToken)
         {
@@ -34,7 +39,7 @@ namespace TechnicalInterview.OmniaRetail.Api.Endpoints
                 productRetailerPrices.Add(productPrice.MapToProductRetailerPrice((Guid)retailerId));
             }
             bool updated = await retailerService.UpdatePricesAsync(productRetailerPrices, cancellationToken);
-            return updated ? Results.Ok(productRetailerPrices) : Results.BadRequest();
+            return updated ? Results.Ok(productRetailerPrices.MapToProductPriceResponses()) : Results.NotFound("None of the products were updated");
         }
 
     }

@@ -12,5 +12,6 @@ namespace TechnicalInterview.OmniaRetail.Application.Services
         public Task<int> GetProductHighestTier1PriceAsync(Guid productId, CancellationToken cancellationToken = default);
         public Task<int> GetPriceRecommendationByIdAsync(Guid productId, PriceTier priceTier = default, CancellationToken cancellationToken = default);
 
+        public Task<IEnumerable<ProductGroup>> ListProductGroupsAsync(CancellationToken cancelationToken = default!);
     }
 }
