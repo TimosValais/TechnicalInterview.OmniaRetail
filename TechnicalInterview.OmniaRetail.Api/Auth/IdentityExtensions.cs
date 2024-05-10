@@ -4,15 +4,14 @@
     {
         public static Guid? GetRetailerId(this HttpContext context)
         {
-            return new Guid("e3a87e20-36d3-42ee-8993-c8dfbfa01c3b");
-            //var retailerId = context.User.Claims.SingleOrDefault(x => x.Type == "retailerId");
+            System.Security.Claims.Claim? retailerId = context.User.Claims.SingleOrDefault(c => c.Type == "retailerId");
 
-            //if (Guid.TryParse(retailerId?.Value, out var parsedId))
-            //{
-            //    return parsedId;
-            //}
+            if (Guid.TryParse(retailerId?.Value, out Guid parsedId))
+            {
+                return parsedId;
+            }
 
-            //return null;
+            return null;
         }
     }
 }

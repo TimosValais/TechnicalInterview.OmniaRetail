@@ -14,7 +14,6 @@ namespace TechnicalInterview.OmniaRetail.Api.Endpoints
         {
             app.MapGet(ApiEndpointsConstants.Product.GetAll, GetAllProducts)
                 .CacheOutput(x => x.Expire(TimeSpan.FromSeconds(cacheExpirationSeconds)));
-
             app.MapGet(ApiEndpointsConstants.Product.Get, GetProductById)
                 .CacheOutput(x => x.SetVaryByRouteValue("id")
                 .Expire(TimeSpan.FromSeconds(cacheExpirationSeconds)));
@@ -22,17 +21,20 @@ namespace TechnicalInterview.OmniaRetail.Api.Endpoints
             app.MapGet(ApiEndpointsConstants.Product.GetPrices, GetProductPricesById)
                 .CacheOutput(x => x.SetVaryByRouteValue("id")
                 .Tag(OutputCacheConstants.CacheTags.Prices)
-                .Expire(TimeSpan.FromSeconds(cacheExpirationSeconds)));
+                .Expire(TimeSpan.FromSeconds(cacheExpirationSeconds)))
+                .RequireAuthorization();
 
             app.MapGet(ApiEndpointsConstants.Product.GetHighestPrice, GetProductHighestPriceById)
                 .CacheOutput(x => x.SetVaryByRouteValue("id")
                 .Tag(OutputCacheConstants.CacheTags.Prices)
-                .Expire(TimeSpan.FromSeconds(cacheExpirationSeconds)));
+                .Expire(TimeSpan.FromSeconds(cacheExpirationSeconds)))
+                .RequireAuthorization();
 
             app.MapGet(ApiEndpointsConstants.Product.GetPriceRecommendations, GetPriceRecomendationByProductId)
                 .CacheOutput(x => x.SetVaryByRouteValue("id")
                 .Tag(OutputCacheConstants.CacheTags.Prices)
-                .Expire(TimeSpan.FromSeconds(cacheExpirationSeconds)));
+                .Expire(TimeSpan.FromSeconds(cacheExpirationSeconds)))
+                .RequireAuthorization();
 
             app.MapGet(ApiEndpointsConstants.ProductGroup.GetAll, GetAllProductGroups)
                 .CacheOutput(x => x.Expire(TimeSpan.FromSeconds(cacheExpirationSeconds)));

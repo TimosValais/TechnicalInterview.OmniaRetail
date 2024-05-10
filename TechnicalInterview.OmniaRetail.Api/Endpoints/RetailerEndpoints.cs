@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 using TechincalInterview.OmniaRetail.Contracts.Requests;
 using TechnicalInterview.OmniaRetail.Api.Auth;
@@ -16,7 +17,7 @@ namespace TechnicalInterview.OmniaRetail.Api.Endpoints
             app.MapGet(ApiEndpointsConstants.ProductGroup.GetCompetitors, GetCompetitorsByProductGroupId);
             app.MapPut(ApiEndpointsConstants.Product.UpdatePrices, UpdateRetailerProductPrices);
         }
-
+        [Authorize(Policy = AuthConstants.RetailerAdminPolicyName)]
         private static async Task<IResult> GetCompetitorsByProductGroupId(Guid productGroupId, IRetailerService retailerService, HttpContext context, CancellationToken cancellationToken)
         {
             Guid? retailerId = context.GetRetailerId();
@@ -27,6 +28,7 @@ namespace TechnicalInterview.OmniaRetail.Api.Endpoints
             IEnumerable<Retailer> competitors = await retailerService.GetCompetitorsByProductGroupIdAsync(productGroupId, (Guid)retailerId, cancellationToken);
             return Results.Ok(competitors.MapToCompetitorResponses());
         }
+        [Authorize(Policy = AuthConstants.RetailerAdminPolicyName)]
         private static async Task<IResult> UpdateRetailerProductPrices([FromBody] ICollection<UpdateProductPriceRequest> productPrices,
                                                                         IRetailerService retailerService,
                                                                         HttpContext context, IOutputCacheStore cache,

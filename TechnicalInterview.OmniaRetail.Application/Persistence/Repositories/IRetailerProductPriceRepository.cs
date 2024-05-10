@@ -2,7 +2,7 @@
 
 namespace TechnicalInterview.OmniaRetail.Application.Persistence.Repositories
 {
-    internal interface IRetailerProductPriceRepository
+    public interface IRetailerProductPriceRepository
     {
         public Task<bool> UpdateBatchAsync(IEnumerable<RetailerProductPrice> retailerProductPrices, CancellationToken cancellationToken = default);
 
